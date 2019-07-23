@@ -295,9 +295,7 @@ private def setNumber(String bedId, String side, number){
 }
 
 private def put(String uri, String body){
-  if (!state.session || !state.session?.key) {
-      login()
-  }
+  login()
   uri = uri + state.session?.key
   
   try {
