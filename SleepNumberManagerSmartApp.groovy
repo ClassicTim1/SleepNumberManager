@@ -19,9 +19,9 @@ definition(
     author: "Classic_Tim",
     description: "Control your Sleep Number bed vai SmartThings. You can use it to raise, lower, and adjsut the pressure on each side of the bed seperately if it's split, or all together if it's not. If you want to do each side seperately you must use two devices for each side",
     category: "Convenience",
-    iconUrl: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience.png",
-    iconX2Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png",
-    iconX3Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png"
+    iconUrl: "https://raw.githubusercontent.com/ClassicTim1/SleepNumberManager/master/icons/logo.jpg",
+    iconX2Url: "https://raw.githubusercontent.com/ClassicTim1/SleepNumberManager/master/icons/logo.jpg",
+    iconX3Url: "https://raw.githubusercontent.com/ClassicTim1/SleepNumberManager/master/icons/logo.jpg"
 )
 
 
@@ -180,7 +180,7 @@ private def ApiUserAgent() { "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/53
 private def updateFamilyStatus(alreadyLoggedIn = false) {
   log.trace "[SleepNumberManager] Updating Family Status"
 
-  if (!state.session || !state.session?.key) {
+  if (needsLogin()) {
       login()
   }
 
@@ -206,14 +206,13 @@ private def updateFamilyStatus(alreadyLoggedIn = false) {
     }
   } catch(Exception e) {
       log.error "[SleepNumberManager] Error updating family status -  Error ($e)"
-      login()
   }
 }
 
 private def updateFoundationStatus(String bedId, String currentSide) {
   log.trace "[SleepNumberManager] Updating Foundation Status for: " + currentSide
 
-  if (!state.session || !state.session?.key) {
+  if (needsLogin()) {
       login()
   }
 
@@ -237,7 +236,6 @@ private def updateFoundationStatus(String bedId, String currentSide) {
     }
   } catch(Exception e) {
       log.error "[SleepNumberManager] Error updating foundation status - Error ($e)"
-      login()
   }
 }
 
@@ -295,7 +293,10 @@ private def setNumber(String bedId, String side, number){
 }
 
 private def put(String uri, String body){
-  login()
+  if(needsLogin()){
+  	login()
+  }
+  log.trace state.session?.key
   uri = uri + state.session?.key
   
   try {
@@ -323,6 +324,34 @@ private def put(String uri, String body){
     }
   } catch(Exception e) {
       log.error "[SleepNumberManager] Put Request failed: "+uri+" : "+body+" : Error ($e)"
-      login()
   }
+}
+
+private def needsLogin(){
+	if(!state.session || !state.session?.key)
+    	return true
+        
+    try {
+        def statusParams = [
+          uri: ApiUriBase() + '/rest/bed/familyStatus?_k=' + state.session?.key,
+          headers: [
+            'Content-Type': 'application/json;charset=UTF-8',
+            'Host': ApiHost(),
+            'User-Agent': ApiUserAgent(),
+            'Cookie': state.session?.cookies,
+            'DNT': '1',
+          ],
+        ]
+        httpGet(statusParams) { response -> 
+          if (response.status == 200) {
+            state.requestData = response.data
+          } else {
+            return true;
+          }
+        }
+  } catch(Exception e) {
+      return true;
+  }
+        
+    return false
 }
