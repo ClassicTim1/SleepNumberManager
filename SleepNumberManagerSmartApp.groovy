@@ -296,7 +296,6 @@ private def put(String uri, String body){
   if(needsLogin()){
   	login()
   }
-  log.trace state.session?.key
   uri = uri + state.session?.key
   
   try {
