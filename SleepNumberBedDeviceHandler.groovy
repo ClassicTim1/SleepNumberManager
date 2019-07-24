@@ -13,8 +13,8 @@
  *  for the specific language governing permissions and limitations under the License.
  */
 metadata {
-	definition (name: "Sleep Number Bed", namespace: "ClassicTim1", author: "Classic_Tim", cstHandler: true) {
-	capability "Switch Level"
+	definition (name: "Sleep Number Bed", namespace: "sleepNumberBed", author: "Classic_Tim", cstHandler: true) {
+		capability "Switch Level"
         capability "Switch"
         capability "PresenceSensor"
         
@@ -69,7 +69,7 @@ def parse(String description) {
 }
 
 def setLevel(level) {
-    sendEvent(name: "level", value: level)
+	sendEvent(name: "level", value: level)
     String side = "L"
     if(device.latestState('side').stringValue == "Right"){
     	side = "R"
