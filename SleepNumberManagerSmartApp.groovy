@@ -50,6 +50,11 @@ def rootPage() {
       }
       href "findDevicePage", title: "Create New Device", description: null
     }
+      if(devices.size() > 0){
+          section(""){
+              paragraph title: "", "To remove a device remove it from the Things tab in SmartThings"
+          }
+      }
   }
 }
 
@@ -96,12 +101,12 @@ def createDevicePage(params) {
   log.trace "createDevicePage()"
 
   def deviceId = "sleepiq.${params.bedId}.${params.side}"
-  def device = addChildDevice("sleepNumber", "Sleep Number", deviceId, null, [label: settings.newDeviceName])
+  def device = addChildDevice("sleepNumberBed", "Sleep Number Bed", deviceId, null, [label: settings.newDeviceName])
   device.setBedId(params.bedId)
   device.setSide(params.side)
   settings.newDeviceName = null
-  
-  dynamicPage(name: "selectDevicePage") {
+  rootPage()
+  /*-dynamicPage(name: "selectDevicePage") {
     section {
       paragraph "Name: ${device.name}"
       paragraph "Label: ${device.label}"
@@ -112,7 +117,7 @@ def createDevicePage(params) {
     section {
       href "rootPage", title: "Back to Device List", description: null
     }
-  }
+  }-*/
 }
 
 
@@ -296,6 +301,7 @@ private def put(String uri, String body){
   if(needsLogin()){
   	login()
   }
+  log.trace state.session?.key
   uri = uri + state.session?.key
   
   try {
