@@ -14,7 +14,7 @@
  */
 metadata {
 	definition (name: "Sleep Number Bed", namespace: "ClassicTim1", author: "Classic_Tim", cstHandler: true) {
-		capability "Switch Level"
+	capability "Switch Level"
         capability "Switch"
         capability "PresenceSensor"
         
@@ -32,9 +32,9 @@ metadata {
 	}
 
 	tiles(scale:2){
-        standardTile("switch", "device.switch", width: 4, height: 4, canChangeIcon: true) {
-            state "on", label:'RAISED', action:"off", icon:"switch.on", backgroundColor:"#79b821"
-            state "off", label:'FLAT', action:"on", icon:"switch.off", backgroundColor:"#ffffff"
+        standardTile("switch", "device.switch", width: 4, height: 4, canChangeIcon: false) {
+            state "on", label:'RAISED', action:"off", icon:"https://raw.githubusercontent.com/ClassicTim1/SleepNumberManager/master/icons/raisedBed-icn3.png", backgroundColor:"#79b821"
+            state "off", label:'FLAT', action:"on", icon:"st.Bedroom.bedroom2", backgroundColor:"#ffffff"
         }
         
         controlTile("levelSliderControl", "device.level", "slider", height: 4, width: 2) {
@@ -69,7 +69,7 @@ def parse(String description) {
 }
 
 def setLevel(level) {
-	sendEvent(name: "level", value: level)
+    sendEvent(name: "level", value: level)
     String side = "L"
     if(device.latestState('side').stringValue == "Right"){
     	side = "R"
