@@ -32,23 +32,19 @@ metadata {
 	}
 
 	tiles(scale:2){
-        standardTile("switch", "device.switch", width: 6, height: 2, canChangeIcon: false) {
-            state "on", label:'FLAT', action:"off", icon:"st.Bedroom.bedroom2", backgroundColor:"#ffffff"
-            state "off", label:'FLAT', action:"off", icon:"st.Bedroom.bedroom2", backgroundColor:"#ffffff"
-        }
         
-        controlTile("levelSliderControl", "device.level", "slider", height: 2, width: 6) {
-   			state "level", action:"switch level.setLevel"
+       	valueTile("value", "device.level", inactiveLabel: false, decoration: "flat", width: 4,height: 2,) {
+			state "value", action:"reportTestValue", label:'${currentValue}', icon:"st.Bedroom.bedroom2"
 		}
-		valueTile("Side", "device.side", width: 3, height: 1){
+		controlTile("valueSliderControl", "device.level", "slider",  width: 2,height: 4, inactiveLabel: true) {
+			state "valueSliderControl", action:"setTestValue"
+		}		
+        valueTile("Side", "device.side", width: 4, height: 1){
         	state "default", label: '${currentValue} Side'
         }   
-		valueTile("Presence", "device.PresenceState", width: 3, height: 1){
+		valueTile("Presence", "device.PresenceState", width: 4, height: 1){
         	state "default", label: '${currentValue}'
         } 
-   //     valueTile("level", "device.level",height:2, width:2, inactiveLabel: false, decoration: "flat") {
-	//		state "level", label: 'Sleep Number: ${currentValue}'
-	//	} 
     }
 }
 
